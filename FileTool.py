@@ -25,7 +25,7 @@ class FileTool:
 
     # Generate JSON or CSV file after managing data is done.
 
-    def generate(self, output):
+    def generate(self, output, output_filepath):
         output = str(output).lower()
 
         # Exporting JSON file
@@ -34,12 +34,12 @@ class FileTool:
             for item in self.final_list[1:]:
                 self.temp_list.append(dict(zip(self.fields_, item)))
 
-            with open("output.json", "w") as write_file:
+            with open(output_filepath, "w") as write_file:
                 json.dump(self.temp_list, write_file, indent=4)
 
         # Exporting CSV File
         elif output == "csv":
-            with open('output.csv', 'w') as output_file:
+            with open(output_filepath, 'w') as output_file:
                 csv_writer = csv.writer(output_file, quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
 
                 for line in self.final_list:
@@ -75,10 +75,33 @@ class FileTool:
                 if checker == 0:
                     print("Ne record is found.")
 
-            elif cmd == "remove":
+            elif cmd == ":remove":
                 remove_id = int(input("ROW NUMBER: "))
-                removed_item = self.final_list.pop(remove_id+1)
-                print(removed_item)
+                try:
+                    removed_item = self.final_list.pop(remove_id+1)
+                    print(removed_item)
+                    self.generate('csv', self.path_)
+                except IndexError:
+                    print("That index does not exist.")
+
+            elif cmd == ":add":
+                for item in self.fields_:
+                    self.temp_list.append(input(f"{item}: "))
+
+                self.final_list.append(self.temp_list)
+                self.generate("csv", self.path_)
+
+            elif cmd == ":update":
+                self.temp_list.clear()
+                update_id = int(input("ROW NUMBER: "))
+                try:
+                    for item in self.fields_:
+                        self.temp_list.append(input(f"{item}: "))
+
+                    self.final_list[update_id] = self.temp_list
+                    self.generate("csv", self.path_)
+                except IndexError:
+                    print("That index does not exist.")
 
 
 FileTool("data.csv", ["LatD", "LatM", "LatS", "NS", "LonD", "LonM", "LonS", "EW", "City", "State"]).menu()

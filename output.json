@@ -1,0 +1,20 @@
+[
+    {
+        "student_id": "\"001\"",
+        "student_name": "\"Seyit \u0130lkt\u00fcrk\"",
+        "major": "\"CS\"",
+        "gpa": "\"3.5\""
+    },
+    {
+        "student_id": "\"002\"",
+        "student_name": "\"Ekrem Kenet\"",
+        "major": "\"Math\"",
+        "gpa": "\"4.0\""
+    },
+    {
+        "student_id": "\"003\"",
+        "student_name": "\"\u00d6zg\u00fcr Talha\"",
+        "major": "\"History\"",
+        "gpa": "\"2.4\""
+    }
+]
