@@ -8,10 +8,8 @@ import json
 
 class FileTool:
     final_list = list()
-    temp_dict = dict()
-    temp_list = list()
 
-    def __init__(self, path_, fields_):
+    def __init__(self, path_, fields_, *args, **kwargs):
         self.path_ = path_
         self.fields_ = fields_
 
@@ -27,15 +25,15 @@ class FileTool:
 
     def generate(self, output, output_filepath):
         output = str(output).lower()
-
+        gen_list = list()
         # Exporting JSON file
         if output == "json":
 
             for item in self.final_list[1:]:
-                self.temp_list.append(dict(zip(self.fields_, item)))
+                gen_list.append(dict(zip(self.fields_, item)))
 
             with open(output_filepath, "w") as write_file:
-                json.dump(self.temp_list, write_file, indent=4)
+                json.dump(gen_list, write_file, indent=4)
 
         # Exporting CSV File
         elif output == "csv":
@@ -45,6 +43,7 @@ class FileTool:
                 for line in self.final_list:
                     csv_writer.writerow(line)
 
+    # Menu Management
     def menu(self):
         while 1:
             checker = 0
@@ -61,14 +60,15 @@ class FileTool:
                 print("Bye!")
                 return 0
             elif cmd == ":search":
+                temp_dict = dict()
                 search_value = input("Enter a keyword that you're looking for: ")
                 quoted_search_value = '"' + search_value + '"'
 
                 for item in self.final_list:
                     if search_value in item or quoted_search_value in item:
-                        self.temp_dict = dict(zip(self.fields_, item))
+                        temp_dict = dict(zip(self.fields_, item))
                         print("----- RESULTS ----")
-                        for key, value in self.temp_dict.items():
+                        for key, value in temp_dict.items():
                             print(key, ":", value)
                         checker = 1
 
@@ -85,26 +85,29 @@ class FileTool:
                     print("That index does not exist.")
 
             elif cmd == ":add":
+                add_list = list()
                 for item in self.fields_:
-                    self.temp_list.append(input(f"{item}: "))
+                    add_list.append(input(f"{item}: "))
 
-                self.final_list.append(self.temp_list)
+                self.final_list.append(add_list)
                 self.generate("csv", self.path_)
+                print(f"{add_list} has been added.")
 
             elif cmd == ":update":
-                self.temp_list.clear()
+                update_list = list()
                 update_id = int(input("ROW NUMBER: "))
                 try:
                     for item in self.fields_:
-                        self.temp_list.append(input(f"{item}: "))
+                        update_list.append(input(f"{item}: "))
 
-                    self.final_list[update_id] = self.temp_list
+                    self.final_list[update_id] = update_list
                     self.generate("csv", self.path_)
+                    print(f"{self.path_} has been updated.")
                 except IndexError:
                     print("That index does not exist.")
 
 
-FileTool("data.csv", ["LatD", "LatM", "LatS", "NS", "LonD", "LonM", "LonS", "EW", "City", "State"]).menu()
+FileTool("data.csv").menu()
 
 
 
